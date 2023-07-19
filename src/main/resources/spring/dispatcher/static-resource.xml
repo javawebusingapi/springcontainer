@@ -6,9 +6,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-	<context:component-scan base-package="com.mycompany.springcontainer">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
-	</context:component-scan>
-	<mvc:annotation-driven/>
+	<!-- 
+		/resources/** 경로가 포함되어 있을 경우 /resources/ 폴더로 바꿔 매핑
+		주의 : resources 폴더는 WEB-INF 바깥쪽에 있어야 함 (URL로 접근 할 수 있어야 하기 떄문)
+	 -->
+	<mvc:resources mapping="/resources/**" location="/resources/"/>
+	
 </beans>

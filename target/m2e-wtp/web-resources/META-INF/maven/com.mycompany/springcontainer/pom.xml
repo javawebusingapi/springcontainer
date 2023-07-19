@@ -82,6 +82,21 @@
 	    <version>5.3.29</version>
 	</dependency>
 	
+	<!-- CH02 -->
+	<!-- 자바 코드로 JSON을 생성하거나, JSON을 파싱해서 이용할 때 사용하는 라이브러리 -->
+	<dependency>
+    	<groupId>org.json</groupId>
+    	<artifactId>json</artifactId>
+    	<version>20230618</version>
+	</dependency>
+	
+	<!-- CH02 -->
+	<!-- 자바 객체 <-> JSON 변환에 사용하는 라이브러리 -->
+	<dependency>
+	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <artifactId>jackson-databind</artifactId>
+	    <version>2.15.2</version>
+	</dependency>
 	
   </dependencies>
 </project>
