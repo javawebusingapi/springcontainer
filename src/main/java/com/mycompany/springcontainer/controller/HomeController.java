@@ -30,7 +30,7 @@ public class HomeController {
 	}
 	
 	
-	//http://localhost:8080/springwebapp
+	//http://localhost:8080/springcontainer
 	@RequestMapping("/")
 	public String home() {
 		log.info("home 실행");

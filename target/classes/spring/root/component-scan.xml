@@ -7,7 +7,7 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	<!-- use-default-filter="true" -> false로 변경(모든 annotation을 실행시키는걸 막음) -->
-	<context:component-scan base-package="com.mycompany.springwebapp" use-default-filters="false">
+	<context:component-scan base-package="com.mycompany.springcontainer" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
 	</context:component-scan>

@@ -1,7 +1,13 @@
 package com.mycompany.springcontainer.controller;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
@@ -13,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mycompany.springcontainer.dto.Ch02FileInfo;
+import com.mycompany.springcontainer.interceptor.Auth;
+import com.mycompany.springcontainer.interceptor.Auth.Role;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -94,6 +102,7 @@ public class Ch02Controller {
 		
 		//직접 JSON응답을 생성
 		response.setContentType("application/json; charset=UTF-8");
+		//출력 스트림
 		PrintWriter pw = response.getWriter();
 		pw.print(responseJson);
 		pw.flush();	
@@ -105,7 +114,7 @@ public class Ch02Controller {
 	public String ajax3() {
 		JSONObject root = new JSONObject();
 		root.put("fileName", "chamgo.PNG");
-		String responseJson = root.toString();	//{"result":"success"} 
+		String responseJson = root.toString();	// {"result":"success"} 
 		return responseJson;
 	}
 	
@@ -116,5 +125,45 @@ public class Ch02Controller {
 		//필드 이름이 속성으로, 필드 값이 값으로
 		fileInfo.setFileName("체리9.jpg");
 		return fileInfo;
+	}
+	
+	@GetMapping("fileDownload")
+	public void fileDownload(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String fileName = "chamgo.PNG";
+		String filePath = "/resources/images/image/"+fileName;
+		filePath = request.getServletContext().getRealPath(filePath);
+		log.info("filePath : " + filePath);
+				
+		//응답 헤드에 Content-Type 추가 : 본문에 뭐가있는지를 브라우저에게 알려주어야함
+		String mimeType = request.getServletContext().getMimeType(filePath);
+		response.setContentType(mimeType);
+		
+		
+		//응답 헤더에 한글 이름의 파일명을 ISO-8859-1 문자셋으로 인코딩해서 추가
+		String userAgent = request.getHeader("User-Agent");
+		if(userAgent.contains("Trident") || userAgent.contains("MSIE")) {
+			//IE
+			fileName = URLEncoder.encode(fileName,"UTF-8");
+			log.info(fileName);
+		} else {
+			//Chrome, Edge, FireFox, Safari
+			//HTTP 헤더에는 한글이 들어갈 수 없으므로 UTF-8을 ISO-8859-1의 형식으로 변환한다.
+			fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+		}
+		//해석 할 수 있는 파일이여도 파일로 다운로드를 받기 위한 코드
+		response.setHeader("Content-Disposition","attachment; filename=\""+fileName+"\"");
+		
+		//응답 본문에 파일 데이터 싣기
+		OutputStream os = response.getOutputStream();
+		Path path = Paths.get(filePath);
+		Files.copy(path,os);
+		os.flush();
+		os.close();
+	}
+	@RequestMapping("/filterAndInterceptor")
+	@Auth(Role.ADMIN)
+	public String adminMethod() {
+		log.info("실행");
+		return "ch02/adminPage";
 	}
 }
